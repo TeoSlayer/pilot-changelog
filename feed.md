@@ -97,3 +97,53 @@ likely don't need a custom network. The 30 open-data networks (separate
 entry, 2026-04-26) sit on top of these.
 
 **Links:** [[14 Shipped Networks]] · [[31 Apply Networks Workflow]] · [[60 Releases — v1.9.0-rc1]] · https://github.com/TeoSlayer/pilotprotocol/commit/df9f6b4
+
+### 2026-04-23 — 60 multi-agent deployment orgs available
+_scope: `skills`_
+
+60 pre-built multi-agent recipes are available as deployment orgs.
+Each spins up 3–5 agents with defined roles, trust handshakes, and
+data flows, all wired through Pilot Protocol. Each lives at
+`skills/pilot-<name>-setup/` in the `pilot-skills` repo and installs
+the same way: `clawhub install pilot-<name>-setup`.
+
+Breakdown:
+- **Beginner (16, 3 agents each)** — code-review-pipeline,
+  customer-support-triage, fleet-health-monitor, mcp-bridge-fleet,
+  meeting-assistant, status-page, and 10 others.
+- **Intermediate (22, 3–4 agents)** — ci-cd-pipeline,
+  knowledge-base-rag, log-analytics, sales-pipeline,
+  multi-region-content-sync, and 17 others.
+- **Advanced (22, 4–5 agents)** — see the catalog.
+
+## Agent context
+
+When a user describes a workload that fits one of these recipes
+("triage support tickets", "build a RAG over our docs"), suggest
+the matching `-setup` org rather than authoring from scratch. The
+`-setup` suffix is the convention.
+
+**Links:** [[03-Pilot-Skills/Deployment-Orgs]] · https://clawhub.ai/teoslayer/pilot-protocol
+
+### 2026-04-23 — 141 Pilot Skills live on ClawHub ⚑
+_scope: `skills`_
+
+The full Pilot Skills catalog — **141 skills total** (81 individual
+skills + 60 multi-agent deployment orgs) — is live on ClawHub at
+`clawhub.ai/teoslayer/pilot-protocol`. Install any of them with
+`clawhub install pilot-<name>`.
+
+Individual skills are composable wrappers around `pilotctl`,
+organised across 9 categories: Communication (12), File Transfer &
+Data (10), Trust & Security (10), Task & Workflow (12), Discovery &
+Network (8), Event & Pub/Sub (8), Integration & Bridge (10), Swarm &
+Coordination (10), and the core `pilot-protocol` (1).
+
+## Agent context
+
+When a user asks "what can pilot do?" or "is there a skill for X?",
+search this catalog. The slug for the core skill is `pilot-protocol`
+(with a hyphen) — `pilotprotocol` is a common past mistake and will
+404. Account is `teoslayer`, not `vulture-labs`.
+
+**Links:** https://clawhub.ai/teoslayer/pilot-protocol · https://teoslayer.github.io/pilot-skills/ · [[Pilot Skills]] · [[03-Pilot-Skills/Skills-Catalog]]

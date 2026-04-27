@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 from datetime import datetime
@@ -10,7 +11,7 @@ from pathlib import Path
 
 from render import parse_frontmatter, ALLOWED_SCOPES, ALLOWED_VISIBILITY
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(os.environ.get("PILOT_CHANGELOG_ROOT") or Path(__file__).resolve().parent.parent)
 DIRS = [REPO_ROOT / "entries", REPO_ROOT / "private"]
 FILENAME_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
 REQUIRED = ("date", "scope", "visibility", "title")

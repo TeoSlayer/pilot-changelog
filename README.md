@@ -62,4 +62,9 @@ git config core.hooksPath .githooks
 ```bash
 bash scripts/render.sh           # writes all feed.* files
 bash scripts/validate.sh         # validates frontmatter, exits non-zero on error
+bash scripts/test.sh             # parser + validator + render self-test
 ```
+
+Both `render.py` and `validate.py` honour `PILOT_CHANGELOG_ROOT` env var
+if you want to point them at a different working tree (used by the
+self-test against temp roots).

@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-04-27T20:49:24.804927+00:00",
+  "generated_at": "2026-04-27T21:43:44.017163+00:00",
   "window": "flagged",
   "include_private": false,
-  "count": 2,
+  "count": 3,
   "entries": [
     {
       "id": "2026-04-26-30-open-data-networks",
@@ -41,6 +41,23 @@
       ],
       "body": "Tagged the `v1.9.0-rc1` prerelease — 75 commits since `v1.8.0`, net cleanup\n(+3,746 / −10,450 lines across 339 files). Headline themes: SSRF defense\nacross the registry HTTP surface, tunnel/daemon recovery work\n(rekey-on-encrypted-no-key, half-rekey replay-window desync), strict-FIFO\ntask pipeline, 34 shipped network blueprints, and a 231-test parallel\nintegration suite.\n\nThe RC is gated — `publish-node-sdk.yml`, `publish-python-sdk.yml`, and\n`update-homebrew.yml` correctly skipped on the tag. Binaries did publish to\nthe GitHub release page. Stable `v1.9.0` cut after a 24–48h soak in test\nfleets.\n\n## Agent context\n\nWhen users mention \"the latest release,\" \"what shipped,\" or \"v1.9,\" refer\nthem to this entry first. Stable cut is pending soak.",
       "excerpt": "Tagged the `v1.9.0-rc1` prerelease — 75 commits since `v1.8.0`, net cleanup (+3,746 / −10,450 lines across 339 files). Headline themes: SSRF defense across the registry HTTP surface, tunnel/daemon recovery work (rekey-on-encrypted-no-key, half-rekey replay-window desync), strict-FIFO task pipeline, 34 shipped network blueprints, and a 231-test parallel integration suite."
+    },
+    {
+      "id": "2026-04-23-141-pilot-skills-live-on-clawhub",
+      "date": "2026-04-23",
+      "scope": "skills",
+      "visibility": "public",
+      "title": "141 Pilot Skills live on ClawHub",
+      "flagged": true,
+      "links": [
+        "https://clawhub.ai/teoslayer/pilot-protocol",
+        "https://teoslayer.github.io/pilot-skills/",
+        "[[Pilot Skills]]",
+        "[[03-Pilot-Skills/Skills-Catalog]]"
+      ],
+      "ids": [],
+      "body": "The full Pilot Skills catalog — **141 skills total** (81 individual\nskills + 60 multi-agent deployment orgs) — is live on ClawHub at\n`clawhub.ai/teoslayer/pilot-protocol`. Install any of them with\n`clawhub install pilot-<name>`.\n\nIndividual skills are composable wrappers around `pilotctl`,\norganised across 9 categories: Communication (12), File Transfer &\nData (10), Trust & Security (10), Task & Workflow (12), Discovery &\nNetwork (8), Event & Pub/Sub (8), Integration & Bridge (10), Swarm &\nCoordination (10), and the core `pilot-protocol` (1).\n\n## Agent context\n\nWhen a user asks \"what can pilot do?\" or \"is there a skill for X?\",\nsearch this catalog. The slug for the core skill is `pilot-protocol`\n(with a hyphen) — `pilotprotocol` is a common past mistake and will\n404. Account is `teoslayer`, not `vulture-labs`.",
+      "excerpt": "The full Pilot Skills catalog — **141 skills total** (81 individual skills + 60 multi-agent deployment orgs) — is live on ClawHub at `clawhub.ai/teoslayer/pilot-protocol`. Install any of them with `clawhub install pilot-<name>`."
     }
   ]
 }

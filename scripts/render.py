@@ -18,13 +18,14 @@ Outputs (relative to repo root):
 from __future__ import annotations
 
 import json
+import os
 import sys
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(os.environ.get("PILOT_CHANGELOG_ROOT") or Path(__file__).resolve().parent.parent)
 ENTRIES_DIRS = [REPO_ROOT / "entries", REPO_ROOT / "private"]
 ALLOWED_SCOPES = {"protocol", "networks", "skills", "infra", "ops", "docs"}
 ALLOWED_VISIBILITY = {"public", "private"}
