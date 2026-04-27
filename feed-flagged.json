@@ -1,25 +1,9 @@
 {
-  "generated_at": "2026-04-27T20:44:23.416156+00:00",
+  "generated_at": "2026-04-27T20:49:24.804927+00:00",
   "window": "flagged",
   "include_private": false,
-  "count": 3,
+  "count": 2,
   "entries": [
-    {
-      "id": "2026-04-27-pilot-changelog-scaffolded",
-      "date": "2026-04-27",
-      "scope": "docs",
-      "visibility": "public",
-      "title": "pilot-changelog repo scaffolded",
-      "flagged": true,
-      "links": [
-        "[[X-Tasks/06-changelog-update-page]]",
-        "[[07 Onboarding agent]]",
-        "[[05 Broadcast context — daily update]]"
-      ],
-      "ids": [],
-      "body": "Stood up `pilot-changelog` — the single chronological feed for \"what\nchanged across the Pilot Protocol platform.\" One git repo, multiple\nrendered outputs: `feed.json` (all-time public), windowed variants\n`feed-1d.json` / `feed-7d.json` / `feed-1m.json`, `feed-flagged.json`\nfor important features, and a human-readable `feed.md`. Private mirror\noutputs (`feed-private.*`) are gitignored.\n\nPipeline: `scripts/new-entry.sh` for authoring (same ergonomics as\n`git commit -m`), `scripts/validate.sh` for frontmatter, `scripts/render.sh`\nfor the feeds. A `pre-commit` hook runs validate + render and stages the\ngenerated feeds. CI re-runs validate + render and fails if generated feeds\ndrift from entries.\n\n## Agent context\n\nThis is the source the onboarding agent should read on every interaction —\nlast 5 public entries from `feed.json`, plus everything in\n`feed-flagged.json`. Don't read private entries.",
-      "excerpt": "Stood up `pilot-changelog` — the single chronological feed for \"what changed across the Pilot Protocol platform.\" One git repo, multiple rendered outputs: `feed.json` (all-time public), windowed variants `feed-1d.json` / `feed-7d.json` / `feed-1m.json`, `feed-flagged.json` for important features, and a human-readable `feed.md`. Private mirror outputs (`feed-private.*`) are gitignored."
-    },
     {
       "id": "2026-04-26-30-open-data-networks",
       "date": "2026-04-26",

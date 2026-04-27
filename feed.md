@@ -2,57 +2,6 @@
 
 ## 2026-04
 
-### 2026-04-27 — Vault scaffold cleanup — 89 to 66 active files, single index
-_scope: `docs`_
-
-Trimmed the operator vault from 89 to 66 active files. Three competing
-root-level maps merged into a single `00 Logical Map` index. 23 duplicates
-and stubs archived under `_archive/2026-04-27/` with an audit log.
-
-All numbered files (01–92) and thematic files were moved into topic
-folders so the vault root contains only the index. This makes the vault
-loadable as a single coherent context for downstream consumers (this
-changelog repo being one).
-
-**Links:** [[00 Logical Map]]
-
-### 2026-04-27 — pilot-changelog repo scaffolded ⚑
-_scope: `docs`_
-
-Stood up `pilot-changelog` — the single chronological feed for "what
-changed across the Pilot Protocol platform." One git repo, multiple
-rendered outputs: `feed.json` (all-time public), windowed variants
-`feed-1d.json` / `feed-7d.json` / `feed-1m.json`, `feed-flagged.json`
-for important features, and a human-readable `feed.md`. Private mirror
-outputs (`feed-private.*`) are gitignored.
-
-Pipeline: `scripts/new-entry.sh` for authoring (same ergonomics as
-`git commit -m`), `scripts/validate.sh` for frontmatter, `scripts/render.sh`
-for the feeds. A `pre-commit` hook runs validate + render and stages the
-generated feeds. CI re-runs validate + render and fails if generated feeds
-drift from entries.
-
-## Agent context
-
-This is the source the onboarding agent should read on every interaction —
-last 5 public entries from `feed.json`, plus everything in
-`feed-flagged.json`. Don't read private entries.
-
-**Links:** [[X-Tasks/06-changelog-update-page]] · [[07 Onboarding agent]] · [[05 Broadcast context — daily update]]
-
-### 2026-04-26 — Email Extractor live on the Jetson cluster
-_scope: `infra`_
-
-Email Extractor — a GitHub stargazer harvester — is live at
-`email-extractor.jetson.lan`, running on the 4-node AGX Orin k3s cluster.
-SQLite + FTS5 trigram search over ~95 target repos.
-
-This is the first non-protocol workload deployed on the Jetson cluster, and
-proves out the cluster as a target for adjacent projects (not just Pilot
-Protocol load testing).
-
-**Links:** [[04-Jetson/Project - Email Extractor]] · [[04-Jetson/Infrastructure - Jetson Cluster]]
-
 ### 2026-04-26 — 30 open-data networks shipped with full inter-agent communication ⚑
 _scope: `networks`_
 
@@ -128,21 +77,6 @@ are now classified separately from nonce replay (previously conflated in
 metrics).
 
 **Links:** [[60 Releases — v1.9.0-rc1]] · [[03 Registry Internals]] · https://github.com/TeoSlayer/pilotprotocol/commit/d4ec11a
-
-### 2026-04-24 — 231-test parallel integration suite
-_scope: `ops`_
-
-The integration suite is now 231 tests across chaos, NAT traversal, policy,
-webhook, security, tasks, resilience, duration, observability, and gateway.
-`run-all.sh` runs them in parallel with NAT lanes and per-worker subnet
-isolation, plus harness fixes that took the suite from "occasionally
-flaky under parallel load" to consistently green.
-
-Memory profile from the same RC: 10-min idle adds 5.8 MiB RSS / 0 fds
-(budget 20 MiB / 10); 10-min load with 3,731 sends adds 23.2 MiB RSS / 0
-fds (budget 100 MiB / 50). Both well inside budget.
-
-**Links:** [[51 Test Harness]] · [[50 Test Suite]] · [[60 Releases — v1.9.0-rc1]] · https://github.com/TeoSlayer/pilotprotocol/commit/dfbd5ff
 
 ### 2026-04-24 — 34 shipped network blueprints
 _scope: `networks`_
