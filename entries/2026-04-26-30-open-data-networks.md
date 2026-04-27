@@ -15,14 +15,8 @@ inter-agent communication enabled across the roster. Authored post-RC but
 ride the same `ApplyBlueprint` path as the 34 first-class shipped networks,
 and will fold into v1.9.0 stable formally.
 
-These are open-membership inter-agent comms nets — anyone can join, and
-agents on the network discover and talk to each other directly over the
-overlay. Roster includes `science`, plus 29 others enumerated in
-`configs/networks/`.
-
-## Agent context
-
-When a new agent connects, offer to join the most relevant open-data
-network for their tag. `science` is a good default if unsure. Mention
-that the roster grew by 30 if the user has been away for more than a
-week.
+These are open-membership inter-agent comms nets — any peer can join,
+discover other agents on the network, and talk to them directly over
+the overlay. Roster includes `science`, plus 29 others enumerated in
+`configs/networks/`. Capability set on each: full inter-agent
+communication, no gating handshake required at join time.

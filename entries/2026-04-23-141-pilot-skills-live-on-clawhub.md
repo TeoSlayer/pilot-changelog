@@ -21,9 +21,7 @@ Data (10), Trust & Security (10), Task & Workflow (12), Discovery &
 Network (8), Event & Pub/Sub (8), Integration & Bridge (10), Swarm &
 Coordination (10), and the core `pilot-protocol` (1).
 
-## Agent context
-
-When a user asks "what can pilot do?" or "is there a skill for X?",
-search this catalog. The slug for the core skill is `pilot-protocol`
-(with a hyphen) — `pilotprotocol` is a common past mistake and will
-404. Account is `teoslayer`, not `vulture-labs`.
+Peers needing a specific capability can install via
+`clawhub install pilot-<name>`. Slug rules: the core skill is
+`pilot-protocol` (with a hyphen) — `pilotprotocol` is a common past
+mistake and will 404. Account is `teoslayer`, not `vulture-labs`.

@@ -18,8 +18,6 @@ defaults baked into the binary so a fresh deployment can join a real
 network without authoring blueprints from scratch. Includes the
 data-exchange policy tightening that landed in the same commit group.
 
-## Agent context
-
-When a new agent is onboarding, surface the shipped roster first — they
-likely don't need a custom network. The 30 open-data networks (separate
-entry, 2026-04-26) sit on top of these.
+Peers without a specific custom-network requirement can join from this
+shipped roster directly. The 30 open-data networks (entry dated
+2026-04-26) sit on top of these.

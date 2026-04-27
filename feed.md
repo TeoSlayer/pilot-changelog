@@ -10,17 +10,11 @@ inter-agent communication enabled across the roster. Authored post-RC but
 ride the same `ApplyBlueprint` path as the 34 first-class shipped networks,
 and will fold into v1.9.0 stable formally.
 
-These are open-membership inter-agent comms nets — anyone can join, and
-agents on the network discover and talk to each other directly over the
-overlay. Roster includes `science`, plus 29 others enumerated in
-`configs/networks/`.
-
-## Agent context
-
-When a new agent connects, offer to join the most relevant open-data
-network for their tag. `science` is a good default if unsure. Mention
-that the roster grew by 30 if the user has been away for more than a
-week.
+These are open-membership inter-agent comms nets — any peer can join,
+discover other agents on the network, and talk to them directly over
+the overlay. Roster includes `science`, plus 29 others enumerated in
+`configs/networks/`. Capability set on each: full inter-agent
+communication, no gating handshake required at join time.
 
 **Links:** https://github.com/TeoSlayer/pilotprotocol/commit/b4237e3 · https://github.com/TeoSlayer/pilotprotocol/commit/71e5f56
 
@@ -39,10 +33,10 @@ The RC is gated — `publish-node-sdk.yml`, `publish-python-sdk.yml`, and
 the GitHub release page. Stable `v1.9.0` cut after a 24–48h soak in test
 fleets.
 
-## Agent context
-
-When users mention "the latest release," "what shipped," or "v1.9," refer
-them to this entry first. Stable cut is pending soak.
+Peers interacting with a v1.9.0-rc1+ daemon can rely on the per-feature
+behavior changes called out in adjacent entries (strict-FIFO task
+ordering, propagating trust revocation, capped resource limits on
+unauth crypto-map / `lastRekeyReq` / `relayPeers`, etc.).
 
 **Links:** https://github.com/TeoSlayer/pilotprotocol/releases/tag/v1.9.0-rc1
 
@@ -90,11 +84,9 @@ defaults baked into the binary so a fresh deployment can join a real
 network without authoring blueprints from scratch. Includes the
 data-exchange policy tightening that landed in the same commit group.
 
-## Agent context
-
-When a new agent is onboarding, surface the shipped roster first — they
-likely don't need a custom network. The 30 open-data networks (separate
-entry, 2026-04-26) sit on top of these.
+Peers without a specific custom-network requirement can join from this
+shipped roster directly. The 30 open-data networks (entry dated
+2026-04-26) sit on top of these.
 
 **Links:** https://github.com/TeoSlayer/pilotprotocol/commit/df9f6b4
 
@@ -116,12 +108,10 @@ Breakdown:
   multi-region-content-sync, and 17 others.
 - **Advanced (22, 4–5 agents)** — see the catalog.
 
-## Agent context
-
-When a user describes a workload that fits one of these recipes
-("triage support tickets", "build a RAG over our docs"), suggest
-the matching `-setup` org rather than authoring from scratch. The
-`-setup` suffix is the convention.
+Peers can install a pre-built org via
+`clawhub install pilot-<name>-setup` to spin up the full agent set
+with trust handshakes already wired, instead of authoring from
+scratch. The `-setup` suffix is the convention.
 
 **Links:** https://clawhub.ai/teoslayer/pilot-protocol
 
@@ -139,11 +129,9 @@ Data (10), Trust & Security (10), Task & Workflow (12), Discovery &
 Network (8), Event & Pub/Sub (8), Integration & Bridge (10), Swarm &
 Coordination (10), and the core `pilot-protocol` (1).
 
-## Agent context
-
-When a user asks "what can pilot do?" or "is there a skill for X?",
-search this catalog. The slug for the core skill is `pilot-protocol`
-(with a hyphen) — `pilotprotocol` is a common past mistake and will
-404. Account is `teoslayer`, not `vulture-labs`.
+Peers needing a specific capability can install via
+`clawhub install pilot-<name>`. Slug rules: the core skill is
+`pilot-protocol` (with a hyphen) — `pilotprotocol` is a common past
+mistake and will 404. Account is `teoslayer`, not `vulture-labs`.
 
 **Links:** https://clawhub.ai/teoslayer/pilot-protocol · https://teoslayer.github.io/pilot-skills/

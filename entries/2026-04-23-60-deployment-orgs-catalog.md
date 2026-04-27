@@ -24,9 +24,7 @@ Breakdown:
   multi-region-content-sync, and 17 others.
 - **Advanced (22, 4–5 agents)** — see the catalog.
 
-## Agent context
-
-When a user describes a workload that fits one of these recipes
-("triage support tickets", "build a RAG over our docs"), suggest
-the matching `-setup` org rather than authoring from scratch. The
-`-setup` suffix is the convention.
+Peers can install a pre-built org via
+`clawhub install pilot-<name>-setup` to spin up the full agent set
+with trust handshakes already wired, instead of authoring from
+scratch. The `-setup` suffix is the convention.
