@@ -263,16 +263,46 @@ def test_integration_missing_required_field_fails():
 
 @case
 def test_integration_render_schema_keys_stable():
-    """Lock the JSON shape so consumers (onboarding agent) don't break silently."""
+    """Lock the JSON shape so peer consumers don't break silently."""
     root = make_temp_root()
     try:
         (root / "entries" / "2026-04-25-a-public-entry.md").write_text(VALID_PUBLIC)
         run_script("render.py", root)
         feed = json.loads((root / "feed.json").read_text())
-        assert set(feed.keys()) == {"generated_at", "window", "include_private", "count", "entries"}, feed.keys()
+        assert set(feed.keys()) == {"latest_entry_date", "window", "include_private", "count", "entries"}, feed.keys()
         entry_keys = set(feed["entries"][0].keys())
         expected = {"id", "date", "scope", "visibility", "title", "flagged", "links", "ids", "body", "excerpt"}
         assert entry_keys == expected, entry_keys ^ expected
+    finally:
+        shutil.rmtree(root)
+
+
+@case
+def test_integration_latest_entry_date_is_deterministic():
+    """latest_entry_date must equal the newest entry's date (not wall-clock)."""
+    root = make_temp_root()
+    try:
+        (root / "entries" / "2026-04-25-a-public-entry.md").write_text(VALID_PUBLIC)
+        (root / "private" / "2026-04-24-a-private-entry.md").write_text(VALID_PRIVATE)
+        run_script("render.py", root)
+        feed = json.loads((root / "feed.json").read_text())
+        assert feed["latest_entry_date"] == "2026-04-25", feed["latest_entry_date"]
+        priv = json.loads((root / "feed-private.json").read_text())
+        assert priv["latest_entry_date"] == "2026-04-25", priv["latest_entry_date"]
+    finally:
+        shutil.rmtree(root)
+
+
+@case
+def test_integration_empty_window_has_null_latest():
+    """An empty windowed feed should report latest_entry_date: null, not crash."""
+    root = make_temp_root()
+    try:
+        # No entries at all → all feeds empty
+        run_script("render.py", root)
+        feed = json.loads((root / "feed.json").read_text())
+        assert feed["count"] == 0
+        assert feed["latest_entry_date"] is None, feed["latest_entry_date"]
     finally:
         shutil.rmtree(root)
 

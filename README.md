@@ -26,6 +26,15 @@ The pre-commit hook validates frontmatter and regenerates the feeds.
 | `feed.md` | all-time | public — human readable |
 | `feed-private.*` | all-time, all | gitignored, operator-only |
 
+`feed.json`, `feed-flagged.json`, and `feed.md` are deterministic given
+the entries — they only change when entries change. `latest_entry_date`
+on each JSON feed reflects the newest entry's date (not wall-clock).
+
+The windowed feeds (`feed-1d`, `feed-7d`, `feed-1m`) shift with
+wall-clock and are regenerated on every commit by the pre-commit hook.
+If no commits land for a few days they may be stale — peer consumers
+that need a precise window should filter `feed.json` by date themselves.
+
 ## Entry format
 
 Each entry is a small frontmatter markdown file in `entries/` (public)

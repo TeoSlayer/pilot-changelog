@@ -189,10 +189,9 @@ def write_json_feed(
     entries: list[Entry],
     window: str,
     include_private: bool,
-    now: datetime,
 ) -> None:
     payload = {
-        "generated_at": now.isoformat(),
+        "latest_entry_date": entries[0].date if entries else None,
         "window": window,
         "include_private": include_private,
         "count": len(entries),
@@ -231,16 +230,16 @@ def main() -> int:
     all_entries = load_entries()
     public = [e for e in all_entries if e.visibility == "public"]
 
-    write_json_feed(REPO_ROOT / "feed.json", entries=public, window="all", include_private=False, now=now)
-    write_json_feed(REPO_ROOT / "feed-1d.json", entries=filter_window(public, 1, now), window="1d", include_private=False, now=now)
-    write_json_feed(REPO_ROOT / "feed-7d.json", entries=filter_window(public, 7, now), window="7d", include_private=False, now=now)
-    write_json_feed(REPO_ROOT / "feed-1m.json", entries=filter_window(public, 30, now), window="1m", include_private=False, now=now)
-    write_json_feed(REPO_ROOT / "feed-flagged.json", entries=[e for e in public if e.flagged], window="flagged", include_private=False, now=now)
+    write_json_feed(REPO_ROOT / "feed.json", entries=public, window="all", include_private=False)
+    write_json_feed(REPO_ROOT / "feed-1d.json", entries=filter_window(public, 1, now), window="1d", include_private=False)
+    write_json_feed(REPO_ROOT / "feed-7d.json", entries=filter_window(public, 7, now), window="7d", include_private=False)
+    write_json_feed(REPO_ROOT / "feed-1m.json", entries=filter_window(public, 30, now), window="1m", include_private=False)
+    write_json_feed(REPO_ROOT / "feed-flagged.json", entries=[e for e in public if e.flagged], window="flagged", include_private=False)
 
     write_markdown_feed(REPO_ROOT / "feed.md", public, title="Pilot Protocol Changelog")
 
     # Private mirror outputs — gitignored, operator console only.
-    write_json_feed(REPO_ROOT / "feed-private.json", entries=all_entries, window="all", include_private=True, now=now)
+    write_json_feed(REPO_ROOT / "feed-private.json", entries=all_entries, window="all", include_private=True)
     write_markdown_feed(REPO_ROOT / "feed-private.md", all_entries, title="Pilot Protocol Changelog (operator)")
 
     return 0

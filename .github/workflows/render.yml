@@ -26,10 +26,15 @@ jobs:
       - name: Render feeds
         run: python3 scripts/render.py
 
-      - name: Fail if generated feeds are out of date
+      - name: Fail if deterministic feeds are out of date
+        # Only check the feeds that are deterministic given entries.
+        # Windowed feeds (1d/7d/1m) shift with wall-clock and are
+        # regenerated on every commit by the local pre-commit hook;
+        # they're not enforced in CI. Consumers that care about a
+        # specific window should compute it from feed.json.
         run: |
-          if ! git diff --exit-code -- feed.json feed-1d.json feed-7d.json feed-1m.json feed-flagged.json feed.md; then
-            echo "::error::Generated feeds are out of date. Run scripts/render.sh and commit." >&2
+          if ! git diff --exit-code -- feed.json feed-flagged.json feed.md; then
+            echo "::error::Deterministic feeds are out of date. Run scripts/render.sh and commit." >&2
             exit 1
           fi
 
