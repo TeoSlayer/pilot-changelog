@@ -39,7 +39,6 @@ visibility: public                 # public | private
 title: 30 open-data networks shipped
 flagged: false                     # surface in feed-flagged.json if true
 links:
-  - "[[15 Open Data Networks]]"
   - https://github.com/TeoSlayer/pilotprotocol/commit/b4237e3
 ids: [44-73]
 ---
@@ -47,6 +46,10 @@ ids: [44-73]
 Body — couple of paragraphs, plain English. Optional "agent context"
 section that the onboarding agent ingests as a system note.
 ```
+
+> **Public entries:** external URLs only. Don't reference operator-only
+> docs (vault wikilinks like `[[Some Note]]` are dead pointers for
+> agents on the network). Private entries may use them freely.
 
 ## Install the pre-commit hook
 

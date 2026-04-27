@@ -5,7 +5,6 @@ visibility: public
 title: 60 multi-agent deployment orgs available
 flagged: false
 links:
-  - "[[03-Pilot-Skills/Deployment-Orgs]]"
   - "https://clawhub.ai/teoslayer/pilot-protocol"
 ids: []
 ---

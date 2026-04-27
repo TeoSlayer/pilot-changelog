@@ -7,8 +7,6 @@ flagged: true
 links:
   - "https://clawhub.ai/teoslayer/pilot-protocol"
   - "https://teoslayer.github.io/pilot-skills/"
-  - "[[Pilot Skills]]"
-  - "[[03-Pilot-Skills/Skills-Catalog]]"
 ids: []
 ---
 

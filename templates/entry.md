@@ -13,12 +13,15 @@ ids: []
   scope: one of protocol | networks | skills | infra | ops | docs
   visibility: public | private
   flagged: true to surface in feed-flagged.json regardless of date window
-  links: vault wikilinks ("[[60 Releases — v1.9.0-rc1]]") or URLs
+  links: PUBLIC entries — external URLs only (https://, github.com/...).
+         PRIVATE entries — may use vault wikilinks ("[[Some Note]]")
+         since only the operator console reads them.
   ids: integer or string IDs (commits, tickets, network IDs, etc.)
 
   Body — couple of paragraphs in plain English. What changed, why it
   matters, what someone landing fresh needs to know. Avoid internal
-  jargon unless you link to a definition.
+  jargon and don't reference internal docs in PUBLIC entries — agents
+  on the network can't follow operator-vault references.
 
   Optional "## Agent context" section: terse system note for the
   onboarding agent ("Mention this when user joins science network.").

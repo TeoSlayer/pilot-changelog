@@ -22,7 +22,7 @@ network for their tag. `science` is a good default if unsure. Mention
 that the roster grew by 30 if the user has been away for more than a
 week.
 
-**Links:** [[15 Open Data Networks]] · [[60 Releases — v1.9.0-rc1]] · https://github.com/TeoSlayer/pilotprotocol/commit/b4237e3 · https://github.com/TeoSlayer/pilotprotocol/commit/71e5f56
+**Links:** https://github.com/TeoSlayer/pilotprotocol/commit/b4237e3 · https://github.com/TeoSlayer/pilotprotocol/commit/71e5f56
 
 ### 2026-04-24 — v1.9.0-rc1 prerelease tagged ⚑
 _scope: `protocol`_
@@ -44,7 +44,7 @@ fleets.
 When users mention "the latest release," "what shipped," or "v1.9," refer
 them to this entry first. Stable cut is pending soak.
 
-**Links:** https://github.com/TeoSlayer/pilotprotocol/releases/tag/v1.9.0-rc1 · [[60 Releases — v1.9.0-rc1]]
+**Links:** https://github.com/TeoSlayer/pilotprotocol/releases/tag/v1.9.0-rc1
 
 ### 2026-04-24 — Strict FIFO task pipeline and propagating trust revocation
 _scope: `protocol`_
@@ -59,7 +59,7 @@ Trust revocation now propagates to the remote peer rather than staying
 local. `pilotctl task result` surfaces delivered payloads, and
 `status_justification` is exposed in `task list`.
 
-**Links:** [[60 Releases — v1.9.0-rc1]] · https://github.com/TeoSlayer/pilotprotocol/commit/024693a
+**Links:** https://github.com/TeoSlayer/pilotprotocol/commit/024693a
 
 ### 2026-04-24 — Registry SSRF defense and snapshot validation
 _scope: `protocol`_
@@ -76,7 +76,7 @@ crypto-map so flood traffic can't grow them unbounded. Stale tunnel packets
 are now classified separately from nonce replay (previously conflated in
 metrics).
 
-**Links:** [[60 Releases — v1.9.0-rc1]] · [[03 Registry Internals]] · https://github.com/TeoSlayer/pilotprotocol/commit/d4ec11a
+**Links:** https://github.com/TeoSlayer/pilotprotocol/commit/d4ec11a
 
 ### 2026-04-24 — 34 shipped network blueprints
 _scope: `networks`_
@@ -96,7 +96,7 @@ When a new agent is onboarding, surface the shipped roster first — they
 likely don't need a custom network. The 30 open-data networks (separate
 entry, 2026-04-26) sit on top of these.
 
-**Links:** [[14 Shipped Networks]] · [[31 Apply Networks Workflow]] · [[60 Releases — v1.9.0-rc1]] · https://github.com/TeoSlayer/pilotprotocol/commit/df9f6b4
+**Links:** https://github.com/TeoSlayer/pilotprotocol/commit/df9f6b4
 
 ### 2026-04-23 — 60 multi-agent deployment orgs available
 _scope: `skills`_
@@ -123,7 +123,7 @@ When a user describes a workload that fits one of these recipes
 the matching `-setup` org rather than authoring from scratch. The
 `-setup` suffix is the convention.
 
-**Links:** [[03-Pilot-Skills/Deployment-Orgs]] · https://clawhub.ai/teoslayer/pilot-protocol
+**Links:** https://clawhub.ai/teoslayer/pilot-protocol
 
 ### 2026-04-23 — 141 Pilot Skills live on ClawHub ⚑
 _scope: `skills`_
@@ -146,4 +146,4 @@ search this catalog. The slug for the core skill is `pilot-protocol`
 (with a hyphen) — `pilotprotocol` is a common past mistake and will
 404. Account is `teoslayer`, not `vulture-labs`.
 
-**Links:** https://clawhub.ai/teoslayer/pilot-protocol · https://teoslayer.github.io/pilot-skills/ · [[Pilot Skills]] · [[03-Pilot-Skills/Skills-Catalog]]
+**Links:** https://clawhub.ai/teoslayer/pilot-protocol · https://teoslayer.github.io/pilot-skills/

@@ -5,9 +5,6 @@ visibility: public
 title: 34 shipped network blueprints
 flagged: false
 links:
-  - "[[14 Shipped Networks]]"
-  - "[[31 Apply Networks Workflow]]"
-  - "[[60 Releases — v1.9.0-rc1]]"
   - "https://github.com/TeoSlayer/pilotprotocol/commit/df9f6b4"
 ids: [df9f6b4]
 ---
