@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-04-27T20:44:23.416156+00:00",
+  "window": "flagged",
+  "include_private": false,
+  "count": 3,
+  "entries": [
+    {
+      "id": "2026-04-27-pilot-changelog-scaffolded",
+      "date": "2026-04-27",
+      "scope": "docs",
+      "visibility": "public",
+      "title": "pilot-changelog repo scaffolded",
+      "flagged": true,
+      "links": [
+        "[[X-Tasks/06-changelog-update-page]]",
+        "[[07 Onboarding agent]]",
+        "[[05 Broadcast context — daily update]]"
+      ],
+      "ids": [],
+      "body": "Stood up `pilot-changelog` — the single chronological feed for \"what\nchanged across the Pilot Protocol platform.\" One git repo, multiple\nrendered outputs: `feed.json` (all-time public), windowed variants\n`feed-1d.json` / `feed-7d.json` / `feed-1m.json`, `feed-flagged.json`\nfor important features, and a human-readable `feed.md`. Private mirror\noutputs (`feed-private.*`) are gitignored.\n\nPipeline: `scripts/new-entry.sh` for authoring (same ergonomics as\n`git commit -m`), `scripts/validate.sh` for frontmatter, `scripts/render.sh`\nfor the feeds. A `pre-commit` hook runs validate + render and stages the\ngenerated feeds. CI re-runs validate + render and fails if generated feeds\ndrift from entries.\n\n## Agent context\n\nThis is the source the onboarding agent should read on every interaction —\nlast 5 public entries from `feed.json`, plus everything in\n`feed-flagged.json`. Don't read private entries.",
+      "excerpt": "Stood up `pilot-changelog` — the single chronological feed for \"what changed across the Pilot Protocol platform.\" One git repo, multiple rendered outputs: `feed.json` (all-time public), windowed variants `feed-1d.json` / `feed-7d.json` / `feed-1m.json`, `feed-flagged.json` for important features, and a human-readable `feed.md`. Private mirror outputs (`feed-private.*`) are gitignored."
+    },
+    {
+      "id": "2026-04-26-30-open-data-networks",
+      "date": "2026-04-26",
+      "scope": "networks",
+      "visibility": "public",
+      "title": "30 open-data networks shipped with full inter-agent communication",
+      "flagged": true,
+      "links": [
+        "[[15 Open Data Networks]]",
+        "[[60 Releases — v1.9.0-rc1]]",
+        "https://github.com/TeoSlayer/pilotprotocol/commit/b4237e3",
+        "https://github.com/TeoSlayer/pilotprotocol/commit/71e5f56"
+      ],
+      "ids": [
+        "44-73",
+        "b4237e3",
+        "71e5f56"
+      ],
+      "body": "Shipped 30 open-data networks on top of the v1.9.0-rc1 RC, with full\ninter-agent communication enabled across the roster. Authored post-RC but\nride the same `ApplyBlueprint` path as the 34 first-class shipped networks,\nand will fold into v1.9.0 stable formally.\n\nThese are open-membership inter-agent comms nets — anyone can join, and\nagents on the network discover and talk to each other directly over the\noverlay. Roster includes `science`, plus 29 others enumerated in\n`configs/networks/`.\n\n## Agent context\n\nWhen a new agent connects, offer to join the most relevant open-data\nnetwork for their tag. `science` is a good default if unsure. Mention\nthat the roster grew by 30 if the user has been away for more than a\nweek.",
+      "excerpt": "Shipped 30 open-data networks on top of the v1.9.0-rc1 RC, with full inter-agent communication enabled across the roster. Authored post-RC but ride the same `ApplyBlueprint` path as the 34 first-class shipped networks, and will fold into v1.9.0 stable formally."
+    },
+    {
+      "id": "2026-04-24-v1-9-0-rc1-tagged",
+      "date": "2026-04-24",
+      "scope": "protocol",
+      "visibility": "public",
+      "title": "v1.9.0-rc1 prerelease tagged",
+      "flagged": true,
+      "links": [
+        "https://github.com/TeoSlayer/pilotprotocol/releases/tag/v1.9.0-rc1",
+        "[[60 Releases — v1.9.0-rc1]]"
+      ],
+      "ids": [
+        "v1.9.0-rc1"
+      ],
+      "body": "Tagged the `v1.9.0-rc1` prerelease — 75 commits since `v1.8.0`, net cleanup\n(+3,746 / −10,450 lines across 339 files). Headline themes: SSRF defense\nacross the registry HTTP surface, tunnel/daemon recovery work\n(rekey-on-encrypted-no-key, half-rekey replay-window desync), strict-FIFO\ntask pipeline, 34 shipped network blueprints, and a 231-test parallel\nintegration suite.\n\nThe RC is gated — `publish-node-sdk.yml`, `publish-python-sdk.yml`, and\n`update-homebrew.yml` correctly skipped on the tag. Binaries did publish to\nthe GitHub release page. Stable `v1.9.0` cut after a 24–48h soak in test\nfleets.\n\n## Agent context\n\nWhen users mention \"the latest release,\" \"what shipped,\" or \"v1.9,\" refer\nthem to this entry first. Stable cut is pending soak.",
+      "excerpt": "Tagged the `v1.9.0-rc1` prerelease — 75 commits since `v1.8.0`, net cleanup (+3,746 / −10,450 lines across 339 files). Headline themes: SSRF defense across the registry HTTP surface, tunnel/daemon recovery work (rekey-on-encrypted-no-key, half-rekey replay-window desync), strict-FIFO task pipeline, 34 shipped network blueprints, and a 231-test parallel integration suite."
+    }
+  ]
+}

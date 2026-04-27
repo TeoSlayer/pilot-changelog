@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# pre-commit — validate frontmatter, render feeds, stage regenerated outputs.
+# Install with: git config core.hooksPath .githooks
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+python3 scripts/validate.py
+python3 scripts/render.py
+
+# Stage only the public-facing generated feeds. Private feeds are gitignored.
+git add feed.json feed-1d.json feed-7d.json feed-1m.json feed-flagged.json feed.md 2>/dev/null || true

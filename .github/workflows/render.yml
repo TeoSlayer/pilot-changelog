@@ -1,0 +1,43 @@
+name: render
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate-and-render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate frontmatter
+        run: python3 scripts/validate.py
+
+      - name: Render feeds
+        run: python3 scripts/render.py
+
+      - name: Fail if generated feeds are out of date
+        run: |
+          if ! git diff --exit-code -- feed.json feed-1d.json feed-7d.json feed-1m.json feed-flagged.json feed.md; then
+            echo "::error::Generated feeds are out of date. Run scripts/render.sh and commit." >&2
+            exit 1
+          fi
+
+      - name: Upload feeds as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: feeds
+          path: |
+            feed.json
+            feed-1d.json
+            feed-7d.json
+            feed-1m.json
+            feed-flagged.json
+            feed.md

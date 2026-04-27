@@ -1,0 +1,23 @@
+# Operator-only / private surfaces — never published
+SESSION.md
+private/
+feed-private.json
+feed-private.md
+
+# Local-only operator notes / scratch / Claude session state
+.local/
+.claude/
+.scratch/
+notes/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
