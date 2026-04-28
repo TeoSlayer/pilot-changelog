@@ -103,6 +103,28 @@ Both `render.py` and `validate.py` honour `PILOT_CHANGELOG_ROOT` env var
 if you want to point them at a different working tree (used by the
 self-test against temp roots).
 
+## SEO / discoverability
+
+- `docs/index.html` carries OpenGraph + Twitter card meta and a JSON-LD
+  `Blog` schema with embedded `BlogPosting` summaries.
+- Every public entry also gets a standalone page at
+  `/entries/<id>.html` with its own `BlogPosting` JSON-LD, canonical
+  URL, and `article:published_time` meta.
+- `docs/robots.txt` allows all crawlers and points at the sitemap.
+- `docs/sitemap.xml` lists the homepage + every per-entry page,
+  regenerated on every render.
+
+To get listed on Google:
+
+1. Open <https://search.google.com/search-console> and add
+   `https://teoslayer.github.io/pilot-changelog/` as a property
+   (URL-prefix, not domain — GitHub Pages doesn't expose DNS).
+2. Verify ownership using the **HTML tag** method. Drop the verification
+   meta tag inside the `<!-- Add google-site-verification meta here ... -->`
+   placeholder in `scripts/render.py::_shared_meta()`. Re-render and push.
+3. Submit the sitemap: `https://teoslayer.github.io/pilot-changelog/sitemap.xml`.
+4. Wait — typical first-crawl is hours to a couple of days.
+
 ## License
 
 [AGPL-3.0](./LICENSE) — same as the rest of the Pilot Protocol stack.

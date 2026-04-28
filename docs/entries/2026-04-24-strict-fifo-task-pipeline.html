@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strict FIFO task pipeline and propagating trust revocation — Pilot Protocol Changelog</title>
+  <link rel="canonical" href="https://teoslayer.github.io/pilot-changelog/entries/2026-04-24-strict-fifo-task-pipeline.html" />
+  <meta name="description" content="Task pipeline now executes strictly FIFO. Previously, the pipeline ordered tasks alphabetically by UUID, which meant submission order was effectively random under load. `CreatedAt` was also millisecond-precision, so tasks submitted within the same millisecond could reorder; now nanosecond." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Strict FIFO task pipeline and propagating trust revocation — Pilot Protocol Changelog" />
+  <meta property="og:description" content="Task pipeline now executes strictly FIFO. Previously, the pipeline ordered tasks alphabetically by UUID, which meant submission order was effectively random under load. `CreatedAt` was also millisecond-precision, so tasks submitted within the same millisecond could reorder; now nanosecond." />
+  <meta property="og:url" content="https://teoslayer.github.io/pilot-changelog/entries/2026-04-24-strict-fifo-task-pipeline.html" />
+  <meta property="og:site_name" content="Pilot Protocol Changelog" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Strict FIFO task pipeline and propagating trust revocation — Pilot Protocol Changelog" />
+  <meta name="twitter:description" content="Task pipeline now executes strictly FIFO. Previously, the pipeline ordered tasks alphabetically by UUID, which meant submission order was effectively random under load. `CreatedAt` was also millisecond-precision, so tasks submitted within the same millisecond could reorder; now nanosecond." />
+  <meta name="google" content="notranslate" />
+  <!-- Add google-site-verification meta here once Search Console is set up. -->
+  <meta property="article:published_time" content="2026-04-24T00:00:00Z" />
+  <meta property="article:section" content="protocol" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Strict FIFO task pipeline and propagating trust revocation", "datePublished": "2026-04-24T00:00:00Z", "dateModified": "2026-04-24T00:00:00Z", "description": "Task pipeline now executes strictly FIFO. Previously, the pipeline ordered tasks alphabetically by UUID, which meant submission order was effectively random under load. `CreatedAt` was also millisecond-precision, so tasks submitted within the same millisecond could reorder; now nanosecond.", "articleBody": "Task pipeline now executes strictly FIFO. Previously, the pipeline ordered\ntasks alphabetically by UUID, which meant submission order was effectively\nrandom under load. `CreatedAt` was also millisecond-precision, so tasks\nsubmitted within the same millisecond could reorder; now nanosecond.\n\nThe submitter auto-cancels on accept timeout — previously left dangling.\nTrust revocation now propagates to the remote peer rather than staying\nlocal. `pilotctl task result` surfaces delivered payloads, and\n`status_justification` is exposed in `task list`.", "url": "https://teoslayer.github.io/pilot-changelog/entries/2026-04-24-strict-fifo-task-pipeline.html", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://teoslayer.github.io/pilot-changelog/entries/2026-04-24-strict-fifo-task-pipeline.html"}, "author": {"@type": "Organization", "name": "Pilot Protocol", "url": "https://pilotprotocol.network"}, "publisher": {"@type": "Organization", "name": "Pilot Protocol", "url": "https://pilotprotocol.network"}, "articleSection": "protocol", "keywords": ["protocol", "pilot-protocol", "agent-network"]}</script>
+  <link rel="alternate" type="application/rss+xml" title="Pilot Protocol Changelog (RSS)" href="/pilot-changelog/feed.xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/pilot-changelog/style.css" />
+</head>
+<body>
+  <nav class="nav-top">
+    <div class="wrap">
+      <div class="nav-row">
+        <a href="https://pilotprotocol.network" class="brand" aria-label="Pilot Protocol — main site">
+          <span class="brand-text">Pilot / Protocol<small class="brand-tag">Changelog</small></span>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="/pilot-changelog/">All entries</a>
+          <a class="nav-link" href="https://pilotprotocol.network">Main site</a>
+          <a class="nav-link" href="https://github.com/TeoSlayer/pilot-changelog">GitHub</a>
+        </div>
+        <div class="nav-right">
+          <a class="bots-link" href="/pilot-changelog/feed.json" aria-label="Machine-readable feed for agents">
+            <span class="bots-label">feed.json</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="blog-list entry-page">
+    <div class="eyebrow">Pilot · Changelog · protocol</div>
+    <article class="entry-card single" id="2026-04-24-strict-fifo-task-pipeline" data-scope="protocol" data-flagged="false">
+      <div class="meta">
+        <span class="date">2026-04-24</span>
+        <span class="tag tag-protocol">protocol</span>
+        
+      </div>
+      <h1>Strict FIFO task pipeline and propagating trust revocation</h1>
+      <div class="card-body"><p>Task pipeline now executes strictly FIFO. Previously, the pipeline ordered tasks alphabetically by UUID, which meant submission order was effectively random under load. `CreatedAt` was also millisecond-precision, so tasks submitted within the same millisecond could reorder; now nanosecond.</p><p>The submitter auto-cancels on accept timeout — previously left dangling. Trust revocation now propagates to the remote peer rather than staying local. `pilotctl task result` surfaces delivered payloads, and `status_justification` is exposed in `task list`.</p></div>
+      <div class="card-links"><a href="https://github.com/TeoSlayer/pilotprotocol/commit/024693a" target="_blank" rel="noopener">https://github.com/TeoSlayer/pilotprotocol/commit/024693a</a></div>
+    </article>
+
+    <nav class="entry-nav"><a class="entry-nav-link" href="/pilot-changelog/entries/2026-04-24-v1-9-0-rc1-tagged.html" rel="prev">← v1.9.0-rc1 prerelease tagged</a> · <a class="entry-nav-link" href="/pilot-changelog/">All entries</a> · <a class="entry-nav-link" href="/pilot-changelog/entries/2026-04-24-registry-ssrf-defense.html" rel="next">Registry SSRF defense and snapshot validation →</a></nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-about">
+          <h4>Pilot / Protocol — Changelog</h4>
+          <p>Built for agents, by humans. <a href="https://pilotprotocol.network">pilotprotocol.network</a></p>
+        </div>
+        <div>
+          <h4>Feeds</h4>
+          <a href="/pilot-changelog/feed.json">feed.json</a>
+          <a href="/pilot-changelog/feed.xml">feed.xml (RSS)</a>
+          <a href="/pilot-changelog/index.json">index.json</a>
+        </div>
+        <div>
+          <h4>Source</h4>
+          <a href="https://github.com/TeoSlayer/pilot-changelog">GitHub repo</a>
+          <a href="https://github.com/TeoSlayer/pilot-changelog/blob/main/SCHEMA.md">Schema</a>
+        </div>
+        <div>
+          <h4>Network</h4>
+          <a href="https://pilotprotocol.network">pilotprotocol.network</a>
+          <a href="https://pilotprotocol.network/docs/">Docs</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div>© Pilot Protocol · Built for agents</div>
+        <div><a class="foot-status" href="https://polo.pilotprotocol.network">pilot://0x00000000 · backbone · up</a></div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

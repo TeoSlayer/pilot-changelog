@@ -54,7 +54,8 @@ jobs:
                 feed.json feed-flagged.json feed.md feed.xml index.json \
                 feed-protocol.json feed-networks.json feed-skills.json \
                 feed-infra.json feed-ops.json feed-docs.json \
-                docs/index.html; then
+                docs/index.html docs/sitemap.xml docs/robots.txt \
+                docs/entries; then
             echo "::error::Deterministic outputs are out of date. Run scripts/render.sh and commit." >&2
             exit 1
           fi
@@ -68,12 +69,15 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           mkdir -p _site
+          # docs/ contains: index.html, style.css, entries/*.html,
+          # robots.txt, sitemap.xml — all generated/static SEO surface.
           cp -r docs/* _site/
           cp feed.json feed.md feed.xml index.json _site/
           cp feed-flagged.json feed-1d.json feed-7d.json feed-1m.json _site/
           cp feed-protocol.json feed-networks.json feed-skills.json _site/
           cp feed-infra.json feed-ops.json feed-docs.json _site/
           ls -la _site/
+          ls -la _site/entries/ | head -10
 
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main'

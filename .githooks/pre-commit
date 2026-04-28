@@ -15,5 +15,5 @@ git add \
     feed-protocol.json feed-networks.json feed-skills.json \
     feed-infra.json feed-ops.json feed-docs.json \
     feed.md feed.xml index.json \
-    docs/index.html \
+    docs/index.html docs/sitemap.xml docs/robots.txt docs/entries \
     2>/dev/null || true

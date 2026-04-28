@@ -261,20 +261,84 @@ def _scope_color_class(scope: str) -> str:
     return f"tag-{scope}"
 
 
+def _shared_meta(*, title: str, description: str, canonical_url: str, og_type: str = "website", entry: Entry | None = None) -> str:
+    """Open Graph + Twitter card + JSON-LD common to index and per-entry pages."""
+    desc_safe = html.escape(description)
+    title_safe = html.escape(title)
+    article_meta = ""
+    json_ld = ""
+    if entry is not None:
+        article_meta = (
+            f'  <meta property="article:published_time" content="{html.escape(entry.date)}T00:00:00Z" />\n'
+            f'  <meta property="article:section" content="{html.escape(entry.scope)}" />\n'
+        )
+        body_plain = (entry.body or entry.excerpt).replace("\n", " ").replace('"', '\\"')
+        json_ld_data = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": entry.title,
+            "datePublished": f"{entry.date}T00:00:00Z",
+            "dateModified": f"{entry.date}T00:00:00Z",
+            "description": entry.excerpt or entry.title,
+            "articleBody": entry.body or entry.excerpt,
+            "url": canonical_url,
+            "mainEntityOfPage": {"@type": "WebPage", "@id": canonical_url},
+            "author": {"@type": "Organization", "name": "Pilot Protocol", "url": MAIN_SITE_URL},
+            "publisher": {"@type": "Organization", "name": "Pilot Protocol", "url": MAIN_SITE_URL},
+            "articleSection": entry.scope,
+            "keywords": [entry.scope, "pilot-protocol", "agent-network"],
+        }
+        json_ld = f'  <script type="application/ld+json">{json.dumps(json_ld_data, ensure_ascii=False)}</script>\n'
+    return (
+        f'  <meta name="description" content="{desc_safe}" />\n'
+        f'  <meta property="og:type" content="{og_type}" />\n'
+        f'  <meta property="og:title" content="{title_safe}" />\n'
+        f'  <meta property="og:description" content="{desc_safe}" />\n'
+        f'  <meta property="og:url" content="{html.escape(canonical_url)}" />\n'
+        f'  <meta property="og:site_name" content="Pilot Protocol Changelog" />\n'
+        f'  <meta name="twitter:card" content="summary" />\n'
+        f'  <meta name="twitter:title" content="{title_safe}" />\n'
+        f'  <meta name="twitter:description" content="{desc_safe}" />\n'
+        f'  <meta name="google" content="notranslate" />\n'
+        '  <!-- Add google-site-verification meta here once Search Console is set up. -->\n'
+        f'{article_meta}'
+        f'{json_ld}'
+    )
+
+
+def _shared_head_links() -> str:
+    return (
+        f'  <link rel="alternate" type="application/rss+xml" title="Pilot Protocol Changelog (RSS)" href="{PAGES_PATH}/feed.xml" />\n'
+        '  <link rel="preconnect" href="https://fonts.googleapis.com" />\n'
+        '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n'
+        '  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet" />\n'
+        f'  <link rel="stylesheet" href="{PAGES_PATH}/style.css" />\n'
+    )
+
+
+def _body_to_html(body: str, fallback: str) -> str:
+    txt = html.escape(body or fallback)
+    txt = txt.replace("\n\n", "</p><p>").replace("\n", " ")
+    return f"<p>{txt}</p>" if txt else ""
+
+
+def _links_html(links: list[str]) -> str:
+    if not links:
+        return ""
+    items = " · ".join(
+        f'<a href="{html.escape(u)}" target="_blank" rel="noopener">{html.escape(u)}</a>'
+        for u in links
+    )
+    return f'<div class="card-links">{items}</div>'
+
+
 def write_docs_html(path: Path, entries: list[Entry]) -> None:
     """Write the GitHub Pages landing page. Style lifted from web4. Deterministic."""
     cards = []
     for e in entries:
-        body_html = html.escape(e.body or e.excerpt).replace("\n\n", "</p><p>").replace("\n", " ")
-        body_html = f"<p>{body_html}</p>" if body_html else ""
-        links_html = ""
-        if e.links:
-            link_items = " · ".join(
-                f'<a href="{html.escape(u)}" target="_blank" rel="noopener">{html.escape(u)}</a>'
-                for u in e.links
-            )
-            links_html = f'<div class="card-links">{link_items}</div>'
+        body_html = _body_to_html(e.body, e.excerpt)
         flag = '<span class="badge-flag" title="Always-surface entry">⚑ flagged</span>' if e.flagged else ""
+        entry_url = f"{PAGES_PATH}/entries/{html.escape(e.id)}.html"
         cards.append(
             f'    <article class="entry-card" id="{html.escape(e.id)}" data-scope="{html.escape(e.scope)}" data-flagged="{str(e.flagged).lower()}">\n'
             "      <div class=\"meta\">\n"
@@ -282,12 +346,35 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
             f'        <span class="tag {_scope_color_class(e.scope)}">{html.escape(e.scope)}</span>\n'
             f"        {flag}\n"
             "      </div>\n"
-            f'      <h3>{html.escape(e.title)}</h3>\n'
+            f'      <h3><a href="{entry_url}">{html.escape(e.title)}</a></h3>\n'
             f'      <div class="card-body">{body_html}</div>\n'
-            f"      {links_html}\n"
+            f"      {_links_html(e.links)}\n"
             "    </article>"
         )
     cards_html = "\n".join(cards) if cards else '    <p class="empty">No public entries yet.</p>'
+
+    # JSON-LD: Blog with embedded BlogPosting summaries (Google can crawl
+    # both the embedded data and follow links to per-entry pages).
+    blog_ld = {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Pilot Protocol Changelog",
+        "url": f"{PAGES_BASE_URL}/",
+        "description": "Operational news for autonomous agents on the Pilot Protocol overlay.",
+        "publisher": {"@type": "Organization", "name": "Pilot Protocol", "url": MAIN_SITE_URL},
+        "blogPost": [
+            {
+                "@type": "BlogPosting",
+                "headline": e.title,
+                "datePublished": f"{e.date}T00:00:00Z",
+                "url": f"{PAGES_BASE_URL}/entries/{e.id}.html",
+                "description": e.excerpt or e.title,
+                "articleSection": e.scope,
+            }
+            for e in entries
+        ],
+    }
+    blog_ld_script = f'  <script type="application/ld+json">{json.dumps(blog_ld, ensure_ascii=False)}</script>\n'
 
     scopes_sorted = sorted(ALLOWED_SCOPES)
     filter_buttons = '\n'.join(
@@ -296,20 +383,20 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
     )
     latest = entries[0].date if entries else "—"
 
+    index_meta = _shared_meta(
+        title="Pilot Protocol Changelog",
+        description="Operational news for autonomous agents on the Pilot Protocol overlay — new networks, new skills, protocol behavior changes.",
+        canonical_url=f"{PAGES_BASE_URL}/",
+        og_type="website",
+    )
     html_doc = f"""<!doctype html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pilot Protocol Changelog</title>
-  <meta name="description" content="Operational news for autonomous agents on the Pilot Protocol overlay — new networks, new skills, protocol behavior changes." />
-  <link rel="alternate" type="application/rss+xml" title="Pilot Protocol Changelog (RSS)" href="{PAGES_PATH}/feed.xml" />
   <link rel="canonical" href="{PAGES_BASE_URL}/" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{PAGES_PATH}/style.css" />
-</head>
+{index_meta}{_shared_head_links()}{blog_ld_script}</head>
 <body>
   <nav class="nav-top">
     <div class="wrap">
@@ -422,6 +509,166 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
     print(f"wrote {path.relative_to(REPO_ROOT)} ({len(entries)} cards)")
 
 
+def write_entry_html(path: Path, entry: Entry, *, all_entries: list[Entry]) -> None:
+    """One HTML page per public entry — separately indexable URL with focused content."""
+    entry_url = f"{PAGES_BASE_URL}/entries/{entry.id}.html"
+    title = f"{entry.title} — Pilot Protocol Changelog"
+    description = entry.excerpt or entry.title
+    body_html = _body_to_html(entry.body, entry.excerpt)
+    flag = '<span class="badge-flag" title="Always-surface entry">⚑ flagged</span>' if entry.flagged else ""
+
+    # Sibling entries: prev/next by date, for in-page navigation.
+    idx = next((i for i, x in enumerate(all_entries) if x.id == entry.id), -1)
+    newer = all_entries[idx - 1] if idx > 0 else None
+    older = all_entries[idx + 1] if 0 <= idx < len(all_entries) - 1 else None
+    nav_links = []
+    if newer:
+        nav_links.append(f'<a class="entry-nav-link" href="{PAGES_PATH}/entries/{newer.id}.html" rel="prev">← {html.escape(newer.title)}</a>')
+    nav_links.append(f'<a class="entry-nav-link" href="{PAGES_PATH}/">All entries</a>')
+    if older:
+        nav_links.append(f'<a class="entry-nav-link" href="{PAGES_PATH}/entries/{older.id}.html" rel="next">{html.escape(older.title)} →</a>')
+    nav_html = '<nav class="entry-nav">' + " · ".join(nav_links) + '</nav>'
+
+    meta = _shared_meta(
+        title=title,
+        description=description,
+        canonical_url=entry_url,
+        og_type="article",
+        entry=entry,
+    )
+    doc = f"""<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{html.escape(title)}</title>
+  <link rel="canonical" href="{entry_url}" />
+{meta}{_shared_head_links()}</head>
+<body>
+  <nav class="nav-top">
+    <div class="wrap">
+      <div class="nav-row">
+        <a href="{MAIN_SITE_URL}" class="brand" aria-label="Pilot Protocol — main site">
+          <span class="brand-text">Pilot / Protocol<small class="brand-tag">Changelog</small></span>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="{PAGES_PATH}/">All entries</a>
+          <a class="nav-link" href="{MAIN_SITE_URL}">Main site</a>
+          <a class="nav-link" href="{REPO_URL}">GitHub</a>
+        </div>
+        <div class="nav-right">
+          <a class="bots-link" href="{PAGES_PATH}/feed.json" aria-label="Machine-readable feed for agents">
+            <span class="bots-label">feed.json</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="blog-list entry-page">
+    <div class="eyebrow">Pilot · Changelog · {html.escape(entry.scope)}</div>
+    <article class="entry-card single" id="{html.escape(entry.id)}" data-scope="{html.escape(entry.scope)}" data-flagged="{str(entry.flagged).lower()}">
+      <div class="meta">
+        <span class="date">{html.escape(entry.date)}</span>
+        <span class="tag {_scope_color_class(entry.scope)}">{html.escape(entry.scope)}</span>
+        {flag}
+      </div>
+      <h1>{html.escape(entry.title)}</h1>
+      <div class="card-body">{body_html}</div>
+      {_links_html(entry.links)}
+    </article>
+
+    {nav_html}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-about">
+          <h4>Pilot / Protocol — Changelog</h4>
+          <p>Built for agents, by humans. <a href="{MAIN_SITE_URL}">{MAIN_SITE_URL.replace('https://', '')}</a></p>
+        </div>
+        <div>
+          <h4>Feeds</h4>
+          <a href="{PAGES_PATH}/feed.json">feed.json</a>
+          <a href="{PAGES_PATH}/feed.xml">feed.xml (RSS)</a>
+          <a href="{PAGES_PATH}/index.json">index.json</a>
+        </div>
+        <div>
+          <h4>Source</h4>
+          <a href="{REPO_URL}">GitHub repo</a>
+          <a href="{REPO_URL}/blob/main/SCHEMA.md">Schema</a>
+        </div>
+        <div>
+          <h4>Network</h4>
+          <a href="{MAIN_SITE_URL}">{MAIN_SITE_URL.replace('https://', '')}</a>
+          <a href="{MAIN_SITE_URL}/docs/">Docs</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div>© Pilot Protocol · Built for agents</div>
+        <div><a class="foot-status" href="https://polo.pilotprotocol.network">pilot://0x00000000 · backbone · up</a></div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(doc, encoding="utf-8")
+
+
+def write_robots_txt(path: Path) -> None:
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {PAGES_BASE_URL}/sitemap.xml\n"
+    )
+    path.write_text(content, encoding="utf-8")
+    print(f"wrote {path.relative_to(REPO_ROOT)}")
+
+
+def write_sitemap_xml(path: Path, entries: list[Entry]) -> None:
+    """Sitemap with homepage + per-entry pages. Deterministic from entries."""
+    urls = []
+    latest = entries[0].date if entries else None
+    if latest:
+        urls.append(
+            "  <url>\n"
+            f"    <loc>{PAGES_BASE_URL}/</loc>\n"
+            f"    <lastmod>{latest}</lastmod>\n"
+            "    <changefreq>daily</changefreq>\n"
+            "    <priority>1.0</priority>\n"
+            "  </url>"
+        )
+    else:
+        urls.append(
+            "  <url>\n"
+            f"    <loc>{PAGES_BASE_URL}/</loc>\n"
+            "    <changefreq>daily</changefreq>\n"
+            "    <priority>1.0</priority>\n"
+            "  </url>"
+        )
+    for e in entries:
+        urls.append(
+            "  <url>\n"
+            f"    <loc>{PAGES_BASE_URL}/entries/{xml_escape(e.id)}.html</loc>\n"
+            f"    <lastmod>{e.date}</lastmod>\n"
+            "    <changefreq>monthly</changefreq>\n"
+            "    <priority>0.8</priority>\n"
+            "  </url>"
+        )
+    body = "\n".join(urls)
+    sitemap = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{body}\n"
+        "</urlset>\n"
+    )
+    path.write_text(sitemap, encoding="utf-8")
+    print(f"wrote {path.relative_to(REPO_ROOT)} ({len(entries) + 1} URLs)")
+
+
 def write_index(path: Path, *, public_entries: list[Entry]) -> None:
     """Manifest of every public feed URL — peers fetch this first to discover."""
     feeds = [
@@ -504,6 +751,21 @@ def main() -> int:
 
     # GitHub Pages landing page (dark theme, web4-styled).
     write_docs_html(REPO_ROOT / "docs" / "index.html", public)
+
+    # Per-entry pages — each public entry gets a separately indexable URL.
+    entries_dir = REPO_ROOT / "docs" / "entries"
+    entries_dir.mkdir(parents=True, exist_ok=True)
+    # Wipe stale entry HTML so renamed/removed entries don't linger on Pages.
+    for stale in entries_dir.glob("*.html"):
+        stale.unlink()
+    for e in public:
+        write_entry_html(entries_dir / f"{e.id}.html", e, all_entries=public)
+    print(f"wrote {len(public)} per-entry HTML pages under docs/entries/")
+
+    # SEO surface — robots.txt + sitemap.xml live in docs/ so they're served
+    # from the Pages origin at /pilot-changelog/robots.txt and /sitemap.xml.
+    write_robots_txt(REPO_ROOT / "docs" / "robots.txt")
+    write_sitemap_xml(REPO_ROOT / "docs" / "sitemap.xml", public)
 
     # Private mirror outputs — gitignored, operator console only.
     write_json_feed(REPO_ROOT / "feed-private.json", entries=all_entries, window="all", include_private=True)
