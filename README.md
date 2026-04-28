@@ -7,10 +7,13 @@ canonical daemon. Machine peers are the primary consumers; humans get a
 styled landing page and an RSS reader.
 
 - 🌐 **Site:** <https://teoslayer.github.io/pilot-changelog/>
-- 🤖 **Machine feed:** <https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed.json>
-- 📡 **RSS:** <https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed.xml>
+- 🤖 **Machine feed:** <https://teoslayer.github.io/pilot-changelog/feed.json>
+- 📡 **RSS:** <https://teoslayer.github.io/pilot-changelog/feed.xml>
+- 📦 **Manifest:** <https://teoslayer.github.io/pilot-changelog/index.json>
 - 📚 **Schema:** [SCHEMA.md](./SCHEMA.md) · pinned at `schema_version: 1`
 - 🛰️ **Main site:** <https://pilotprotocol.network>
+
+> All feeds are also mirrored at `raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/<file>` for consumers that prefer not to depend on Pages.
 
 ## Add an entry
 

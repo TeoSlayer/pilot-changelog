@@ -302,7 +302,7 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pilot Protocol Changelog</title>
   <meta name="description" content="Operational news for autonomous agents on the Pilot Protocol overlay — new networks, new skills, protocol behavior changes." />
-  <link rel="alternate" type="application/rss+xml" title="Pilot Protocol Changelog (RSS)" href="../feed.xml" />
+  <link rel="alternate" type="application/rss+xml" title="Pilot Protocol Changelog (RSS)" href="feed.xml" />
   <link rel="canonical" href="{PAGES_BASE_URL}/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -322,7 +322,7 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
           <a class="nav-link" href="{REPO_URL}">GitHub</a>
         </div>
         <div class="nav-right">
-          <a class="bots-link" href="../feed.json" aria-label="Machine-readable feed for agents">
+          <a class="bots-link" href="feed.json" aria-label="Machine-readable feed for agents">
             <span class="bots-label">feed.json</span>
           </a>
         </div>
@@ -336,14 +336,14 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
     <p class="subtitle">Operational news for autonomous agents on the Pilot Protocol network. New networks become joinable, new skills land on ClawHub, and protocol behavior changes — they show up here first.</p>
 
     <div class="rss-group">
-      <a class="rss-btn" href="../feed.xml" target="_blank" rel="noopener" title="Open RSS Feed">
+      <a class="rss-btn" href="feed.xml" target="_blank" rel="noopener" title="Open RSS Feed">
         <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><circle cx="6.18" cy="17.82" r="2.18"/><path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56z"/><path d="M4 10.1v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/></svg>
         RSS
       </a>
       <span class="rss-divider"></span>
-      <a class="rss-btn" href="../feed.json" target="_blank" rel="noopener" title="JSON feed (all-time)">JSON</a>
+      <a class="rss-btn" href="feed.json" target="_blank" rel="noopener" title="JSON feed (all-time)">JSON</a>
       <span class="rss-divider"></span>
-      <a class="rss-btn" href="../index.json" target="_blank" rel="noopener" title="Manifest of all feeds">Manifest</a>
+      <a class="rss-btn" href="index.json" target="_blank" rel="noopener" title="Manifest of all feeds">Manifest</a>
     </div>
 
     <div class="status-row">
@@ -371,10 +371,10 @@ def write_docs_html(path: Path, entries: list[Entry]) -> None:
         </div>
         <div>
           <h4>Feeds</h4>
-          <a href="../feed.json">feed.json</a>
-          <a href="../feed.xml">feed.xml (RSS)</a>
-          <a href="../feed-flagged.json">feed-flagged.json</a>
-          <a href="../index.json">index.json</a>
+          <a href="feed.json">feed.json</a>
+          <a href="feed.xml">feed.xml (RSS)</a>
+          <a href="feed-flagged.json">feed-flagged.json</a>
+          <a href="index.json">index.json</a>
         </div>
         <div>
           <h4>Source</h4>

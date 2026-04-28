@@ -97,14 +97,23 @@ GUID and the entry's `date` (UTC midnight) as `<pubDate>` in RFC 822.
 
 ## Feed URLs
 
-Stable, served from the GitHub Pages root and from `raw.githubusercontent.com`:
+Every public feed is served from two origins:
+
+**Primary — GitHub Pages** (single origin, RSS auto-discovery, faster):
 
 - `https://teoslayer.github.io/pilot-changelog/` — human site
-- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/index.json` — manifest
-- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed.json` — canonical machine feed
-- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed.xml` — RSS
-- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed-<scope>.json` — per scope
-- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed-flagged.json` — flagged
+- `https://teoslayer.github.io/pilot-changelog/index.json` — manifest
+- `https://teoslayer.github.io/pilot-changelog/feed.json` — canonical machine feed
+- `https://teoslayer.github.io/pilot-changelog/feed.xml` — RSS
+- `https://teoslayer.github.io/pilot-changelog/feed-<scope>.json` — per scope
+- `https://teoslayer.github.io/pilot-changelog/feed-flagged.json` — flagged
+
+**Alternate — `raw.githubusercontent.com`** (no Pages dep, ~5 min cache):
+
+- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed.json`
+- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/feed.xml`
+- `https://raw.githubusercontent.com/TeoSlayer/pilot-changelog/main/index.json`
+- (etc. — same filenames at the repo root)
 
 ## Polling
 
