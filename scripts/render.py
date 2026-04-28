@@ -17,6 +17,7 @@ Outputs (relative to repo root):
 
 from __future__ import annotations
 
+import html
 import json
 import os
 import sys
@@ -24,11 +25,20 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from xml.sax.saxutils import escape as xml_escape
 
 REPO_ROOT = Path(os.environ.get("PILOT_CHANGELOG_ROOT") or Path(__file__).resolve().parent.parent)
 ENTRIES_DIRS = [REPO_ROOT / "entries", REPO_ROOT / "private"]
 ALLOWED_SCOPES = {"protocol", "networks", "skills", "infra", "ops", "docs"}
 ALLOWED_VISIBILITY = {"public", "private"}
+SCHEMA_VERSION = 1
+
+PAGES_BASE_URL = "https://teoslayer.github.io/pilot-changelog"
+MAIN_SITE_URL = "https://pilotprotocol.network"
+REPO_URL = "https://github.com/TeoSlayer/pilot-changelog"
+
+_DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+_MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
 @dataclass
@@ -191,6 +201,7 @@ def write_json_feed(
     include_private: bool,
 ) -> None:
     payload = {
+        "schema_version": SCHEMA_VERSION,
         "latest_entry_date": entries[0].date if entries else None,
         "window": window,
         "include_private": include_private,
@@ -199,6 +210,246 @@ def write_json_feed(
     }
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"wrote {path.relative_to(REPO_ROOT)} ({len(entries)} entries)")
+
+
+def to_rfc822(date_str: str) -> str:
+    """Convert YYYY-MM-DD to RFC 822 (RSS pubDate). Locale-independent."""
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    return f"{_DAY_NAMES[dt.weekday()]}, {dt.day:02d} {_MONTH_NAMES[dt.month-1]} {dt.year} 00:00:00 +0000"
+
+
+def write_rss_feed(path: Path, entries: list[Entry], *, channel_link: str) -> None:
+    """Write an RSS 2.0 feed of public entries. Deterministic given entries."""
+    items = []
+    for e in entries:
+        guid = f"{REPO_URL}/blob/main/entries/{e.id}.md"
+        # Description: excerpt is plain text; wrap categories from links/scope.
+        desc = xml_escape(e.excerpt or e.title)
+        items.append(
+            "    <item>\n"
+            f"      <title>{xml_escape(e.title)}</title>\n"
+            f"      <link>{xml_escape(channel_link)}#{xml_escape(e.id)}</link>\n"
+            f"      <description>{desc}</description>\n"
+            f"      <category>{xml_escape(e.scope)}</category>\n"
+            f"      <pubDate>{to_rfc822(e.date)}</pubDate>\n"
+            f'      <guid isPermaLink="false">{xml_escape(guid)}</guid>\n'
+            "    </item>"
+        )
+    last_build = to_rfc822(entries[0].date) if entries else to_rfc822("1970-01-01")
+    rss = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+        "  <channel>\n"
+        f"    <title>Pilot Protocol Changelog</title>\n"
+        f"    <link>{xml_escape(channel_link)}</link>\n"
+        f'    <atom:link href="{xml_escape(channel_link)}/feed.xml" rel="self" type="application/rss+xml" />\n'
+        "    <description>Operational news for autonomous agents on the Pilot Protocol overlay — new networks, new skills, protocol behavior changes.</description>\n"
+        "    <language>en-us</language>\n"
+        f"    <lastBuildDate>{last_build}</lastBuildDate>\n"
+        "    <generator>pilot-changelog/render.py</generator>\n"
+        + ("\n".join(items) + "\n" if items else "")
+        + "  </channel>\n"
+        "</rss>\n"
+    )
+    path.write_text(rss, encoding="utf-8")
+    print(f"wrote {path.relative_to(REPO_ROOT)} ({len(entries)} items)")
+
+
+def _scope_color_class(scope: str) -> str:
+    """Stable scope → CSS class for tag styling."""
+    return f"tag-{scope}"
+
+
+def write_docs_html(path: Path, entries: list[Entry]) -> None:
+    """Write the GitHub Pages landing page. Style lifted from web4. Deterministic."""
+    cards = []
+    for e in entries:
+        body_html = html.escape(e.body or e.excerpt).replace("\n\n", "</p><p>").replace("\n", " ")
+        body_html = f"<p>{body_html}</p>" if body_html else ""
+        links_html = ""
+        if e.links:
+            link_items = " · ".join(
+                f'<a href="{html.escape(u)}" target="_blank" rel="noopener">{html.escape(u)}</a>'
+                for u in e.links
+            )
+            links_html = f'<div class="card-links">{link_items}</div>'
+        flag = '<span class="badge-flag" title="Always-surface entry">⚑ flagged</span>' if e.flagged else ""
+        cards.append(
+            f'    <article class="entry-card" id="{html.escape(e.id)}" data-scope="{html.escape(e.scope)}" data-flagged="{str(e.flagged).lower()}">\n'
+            "      <div class=\"meta\">\n"
+            f'        <span class="date">{html.escape(e.date)}</span>\n'
+            f'        <span class="tag {_scope_color_class(e.scope)}">{html.escape(e.scope)}</span>\n'
+            f"        {flag}\n"
+            "      </div>\n"
+            f'      <h3>{html.escape(e.title)}</h3>\n'
+            f'      <div class="card-body">{body_html}</div>\n'
+            f"      {links_html}\n"
+            "    </article>"
+        )
+    cards_html = "\n".join(cards) if cards else '    <p class="empty">No public entries yet.</p>'
+
+    scopes_sorted = sorted(ALLOWED_SCOPES)
+    filter_buttons = '\n'.join(
+        f'      <button class="filter-tab" data-filter="{s}">{s}</button>'
+        for s in scopes_sorted
+    )
+    latest = entries[0].date if entries else "—"
+
+    html_doc = f"""<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pilot Protocol Changelog</title>
+  <meta name="description" content="Operational news for autonomous agents on the Pilot Protocol overlay — new networks, new skills, protocol behavior changes." />
+  <link rel="alternate" type="application/rss+xml" title="Pilot Protocol Changelog (RSS)" href="../feed.xml" />
+  <link rel="canonical" href="{PAGES_BASE_URL}/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav-top">
+    <div class="wrap">
+      <div class="nav-row">
+        <a href="{MAIN_SITE_URL}" class="brand" aria-label="Pilot Protocol — main site">
+          <span class="brand-text">Pilot / Protocol<small class="brand-tag">Changelog</small></span>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="{MAIN_SITE_URL}">Main site</a>
+          <a class="nav-link" href="{MAIN_SITE_URL}/docs/">Docs</a>
+          <a class="nav-link" href="{REPO_URL}">GitHub</a>
+        </div>
+        <div class="nav-right">
+          <a class="bots-link" href="../feed.json" aria-label="Machine-readable feed for agents">
+            <span class="bots-label">feed.json</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="blog-list">
+    <div class="eyebrow">Pilot · Changelog</div>
+    <h1>News from the <em>overlay</em>.</h1>
+    <p class="subtitle">Operational news for autonomous agents on the Pilot Protocol network. New networks become joinable, new skills land on ClawHub, and protocol behavior changes — they show up here first.</p>
+
+    <div class="rss-group">
+      <a class="rss-btn" href="../feed.xml" target="_blank" rel="noopener" title="Open RSS Feed">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><circle cx="6.18" cy="17.82" r="2.18"/><path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56z"/><path d="M4 10.1v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/></svg>
+        RSS
+      </a>
+      <span class="rss-divider"></span>
+      <a class="rss-btn" href="../feed.json" target="_blank" rel="noopener" title="JSON feed (all-time)">JSON</a>
+      <span class="rss-divider"></span>
+      <a class="rss-btn" href="../index.json" target="_blank" rel="noopener" title="Manifest of all feeds">Manifest</a>
+    </div>
+
+    <div class="status-row">
+      <span class="status-pill">Latest entry · <strong>{latest}</strong></span>
+      <span class="status-pill">{len(entries)} public entries</span>
+    </div>
+
+    <div class="blog-filters">
+      <button class="filter-tab active" data-filter="all">all</button>
+      <button class="filter-tab" data-filter="flagged">flagged</button>
+{filter_buttons}
+    </div>
+
+    <div id="entry-cards">
+{cards_html}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-about">
+          <h4>Pilot / Protocol — Changelog</h4>
+          <p>Built for agents, by humans. <a href="{MAIN_SITE_URL}">{MAIN_SITE_URL.replace('https://', '')}</a></p>
+        </div>
+        <div>
+          <h4>Feeds</h4>
+          <a href="../feed.json">feed.json</a>
+          <a href="../feed.xml">feed.xml (RSS)</a>
+          <a href="../feed-flagged.json">feed-flagged.json</a>
+          <a href="../index.json">index.json</a>
+        </div>
+        <div>
+          <h4>Source</h4>
+          <a href="{REPO_URL}">GitHub repo</a>
+          <a href="{REPO_URL}/blob/main/SCHEMA.md">Schema</a>
+          <a href="{REPO_URL}/blob/main/README.md">Readme</a>
+        </div>
+        <div>
+          <h4>Network</h4>
+          <a href="{MAIN_SITE_URL}">{MAIN_SITE_URL.replace('https://', '')}</a>
+          <a href="{MAIN_SITE_URL}/docs/">Docs</a>
+          <a href="https://polo.pilotprotocol.network">Polo (live)</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div>© Pilot Protocol · Built for agents</div>
+        <div><a class="foot-status" href="https://polo.pilotprotocol.network">pilot://0x00000000 · backbone · up</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Filter cards by scope or flagged.
+    document.querySelectorAll('.filter-tab').forEach(btn => {{
+      btn.addEventListener('click', () => {{
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.entry-card').forEach(card => {{
+          let show;
+          if (f === 'all') show = true;
+          else if (f === 'flagged') show = card.dataset.flagged === 'true';
+          else show = card.dataset.scope === f;
+          card.style.display = show ? '' : 'none';
+        }});
+      }});
+    }});
+  </script>
+</body>
+</html>
+"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(html_doc, encoding="utf-8")
+    print(f"wrote {path.relative_to(REPO_ROOT)} ({len(entries)} cards)")
+
+
+def write_index(path: Path, *, public_entries: list[Entry]) -> None:
+    """Manifest of every public feed URL — peers fetch this first to discover."""
+    feeds = [
+        {"name": "all", "window": "all", "url": "feed.json",
+         "description": "Every public entry, all-time."},
+        {"name": "1d", "window": "1d", "url": "feed-1d.json",
+         "description": "Public entries from the last 24 hours (wall-clock cutoff)."},
+        {"name": "7d", "window": "7d", "url": "feed-7d.json",
+         "description": "Public entries from the last 7 days (wall-clock cutoff)."},
+        {"name": "1m", "window": "1m", "url": "feed-1m.json",
+         "description": "Public entries from the last 30 days (wall-clock cutoff)."},
+        {"name": "flagged", "window": "flagged", "url": "feed-flagged.json",
+         "description": "Public entries marked flagged (always-surface, regardless of date)."},
+    ]
+    for scope in sorted(ALLOWED_SCOPES):
+        feeds.append({
+            "name": f"scope:{scope}",
+            "window": "all",
+            "url": f"feed-{scope}.json",
+            "description": f"All public entries scoped to {scope!r}, all-time.",
+        })
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "repo": "https://github.com/TeoSlayer/pilot-changelog",
+        "latest_entry_date": public_entries[0].date if public_entries else None,
+        "feeds": feeds,
+    }
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"wrote {path.relative_to(REPO_ROOT)} ({len(feeds)} feeds listed)")
 
 
 def write_markdown_feed(path: Path, entries: list[Entry], *, title: str) -> None:
@@ -236,7 +487,22 @@ def main() -> int:
     write_json_feed(REPO_ROOT / "feed-1m.json", entries=filter_window(public, 30, now), window="1m", include_private=False)
     write_json_feed(REPO_ROOT / "feed-flagged.json", entries=[e for e in public if e.flagged], window="flagged", include_private=False)
 
+    # Per-scope feeds — peers can subscribe to just protocol/networks/etc.
+    # Always emit a file per allowed scope, even if empty, so URLs are stable.
+    for scope in sorted(ALLOWED_SCOPES):
+        scope_entries = [e for e in public if e.scope == scope]
+        write_json_feed(REPO_ROOT / f"feed-{scope}.json", entries=scope_entries, window=f"scope:{scope}", include_private=False)
+
     write_markdown_feed(REPO_ROOT / "feed.md", public, title="Pilot Protocol Changelog")
+
+    # RSS 2.0 for human / RSS-reader subscription.
+    write_rss_feed(REPO_ROOT / "feed.xml", public, channel_link=PAGES_BASE_URL)
+
+    # Manifest — single discovery URL listing every public feed.
+    write_index(REPO_ROOT / "index.json", public_entries=public)
+
+    # GitHub Pages landing page (dark theme, web4-styled).
+    write_docs_html(REPO_ROOT / "docs" / "index.html", public)
 
     # Private mirror outputs — gitignored, operator console only.
     write_json_feed(REPO_ROOT / "feed-private.json", entries=all_entries, window="all", include_private=True)

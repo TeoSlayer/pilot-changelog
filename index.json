@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "repo": "https://github.com/TeoSlayer/pilot-changelog",
+  "latest_entry_date": "2026-04-26",
+  "feeds": [
+    {
+      "name": "all",
+      "window": "all",
+      "url": "feed.json",
+      "description": "Every public entry, all-time."
+    },
+    {
+      "name": "1d",
+      "window": "1d",
+      "url": "feed-1d.json",
+      "description": "Public entries from the last 24 hours (wall-clock cutoff)."
+    },
+    {
+      "name": "7d",
+      "window": "7d",
+      "url": "feed-7d.json",
+      "description": "Public entries from the last 7 days (wall-clock cutoff)."
+    },
+    {
+      "name": "1m",
+      "window": "1m",
+      "url": "feed-1m.json",
+      "description": "Public entries from the last 30 days (wall-clock cutoff)."
+    },
+    {
+      "name": "flagged",
+      "window": "flagged",
+      "url": "feed-flagged.json",
+      "description": "Public entries marked flagged (always-surface, regardless of date)."
+    },
+    {
+      "name": "scope:docs",
+      "window": "all",
+      "url": "feed-docs.json",
+      "description": "All public entries scoped to 'docs', all-time."
+    },
+    {
+      "name": "scope:infra",
+      "window": "all",
+      "url": "feed-infra.json",
+      "description": "All public entries scoped to 'infra', all-time."
+    },
+    {
+      "name": "scope:networks",
+      "window": "all",
+      "url": "feed-networks.json",
+      "description": "All public entries scoped to 'networks', all-time."
+    },
+    {
+      "name": "scope:ops",
+      "window": "all",
+      "url": "feed-ops.json",
+      "description": "All public entries scoped to 'ops', all-time."
+    },
+    {
+      "name": "scope:protocol",
+      "window": "all",
+      "url": "feed-protocol.json",
+      "description": "All public entries scoped to 'protocol', all-time."
+    },
+    {
+      "name": "scope:skills",
+      "window": "all",
+      "url": "feed-skills.json",
+      "description": "All public entries scoped to 'skills', all-time."
+    }
+  ]
+}

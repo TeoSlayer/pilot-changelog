@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "latest_entry_date": "2026-04-24",
+  "window": "scope:protocol",
+  "include_private": false,
+  "count": 3,
+  "entries": [
+    {
+      "id": "2026-04-24-v1-9-0-rc1-tagged",
+      "date": "2026-04-24",
+      "scope": "protocol",
+      "visibility": "public",
+      "title": "v1.9.0-rc1 prerelease tagged",
+      "flagged": true,
+      "links": [
+        "https://github.com/TeoSlayer/pilotprotocol/releases/tag/v1.9.0-rc1"
+      ],
+      "ids": [
+        "v1.9.0-rc1"
+      ],
+      "body": "Tagged the `v1.9.0-rc1` prerelease — 75 commits since `v1.8.0`, net cleanup\n(+3,746 / −10,450 lines across 339 files). Headline themes: SSRF defense\nacross the registry HTTP surface, tunnel/daemon recovery work\n(rekey-on-encrypted-no-key, half-rekey replay-window desync), strict-FIFO\ntask pipeline, 34 shipped network blueprints, and a 231-test parallel\nintegration suite.\n\nThe RC is gated — `publish-node-sdk.yml`, `publish-python-sdk.yml`, and\n`update-homebrew.yml` correctly skipped on the tag. Binaries did publish to\nthe GitHub release page. Stable `v1.9.0` cut after a 24–48h soak in test\nfleets.\n\nPeers interacting with a v1.9.0-rc1+ daemon can rely on the per-feature\nbehavior changes called out in adjacent entries (strict-FIFO task\nordering, propagating trust revocation, capped resource limits on\nunauth crypto-map / `lastRekeyReq` / `relayPeers`, etc.).",
+      "excerpt": "Tagged the `v1.9.0-rc1` prerelease — 75 commits since `v1.8.0`, net cleanup (+3,746 / −10,450 lines across 339 files). Headline themes: SSRF defense across the registry HTTP surface, tunnel/daemon recovery work (rekey-on-encrypted-no-key, half-rekey replay-window desync), strict-FIFO task pipeline, 34 shipped network blueprints, and a 231-test parallel integration suite."
+    },
+    {
+      "id": "2026-04-24-strict-fifo-task-pipeline",
+      "date": "2026-04-24",
+      "scope": "protocol",
+      "visibility": "public",
+      "title": "Strict FIFO task pipeline and propagating trust revocation",
+      "flagged": false,
+      "links": [
+        "https://github.com/TeoSlayer/pilotprotocol/commit/024693a"
+      ],
+      "ids": [
+        "024693a"
+      ],
+      "body": "Task pipeline now executes strictly FIFO. Previously, the pipeline ordered\ntasks alphabetically by UUID, which meant submission order was effectively\nrandom under load. `CreatedAt` was also millisecond-precision, so tasks\nsubmitted within the same millisecond could reorder; now nanosecond.\n\nThe submitter auto-cancels on accept timeout — previously left dangling.\nTrust revocation now propagates to the remote peer rather than staying\nlocal. `pilotctl task result` surfaces delivered payloads, and\n`status_justification` is exposed in `task list`.",
+      "excerpt": "Task pipeline now executes strictly FIFO. Previously, the pipeline ordered tasks alphabetically by UUID, which meant submission order was effectively random under load. `CreatedAt` was also millisecond-precision, so tasks submitted within the same millisecond could reorder; now nanosecond."
+    },
+    {
+      "id": "2026-04-24-registry-ssrf-defense",
+      "date": "2026-04-24",
+      "scope": "protocol",
+      "visibility": "public",
+      "title": "Registry SSRF defense and snapshot validation",
+      "flagged": false,
+      "links": [
+        "https://github.com/TeoSlayer/pilotprotocol/commit/d4ec11a"
+      ],
+      "ids": [
+        "d4ec11a"
+      ],
+      "body": "Hardened the registry HTTP surface against SSRF across the IDP-config,\nwebhook, and snapshot endpoints. `handleSetIDPConfig` previously accepted\nSSRF-bait URLs at face value; it now validates them. Snapshot restore was\nre-installing unvalidated URLs from disk on startup; restore now revalidates.\nThe cloud-metadata hostname check was case-sensitive and could be bypassed\nwith mixed case (`Metadata.google.internal`); now case-insensitive.\n\nResource caps added on `lastRekeyReq`, `relayPeers`, and the unauth\ncrypto-map so flood traffic can't grow them unbounded. Stale tunnel packets\nare now classified separately from nonce replay (previously conflated in\nmetrics).",
+      "excerpt": "Hardened the registry HTTP surface against SSRF across the IDP-config, webhook, and snapshot endpoints. `handleSetIDPConfig` previously accepted SSRF-bait URLs at face value; it now validates them. Snapshot restore was re-installing unvalidated URLs from disk on startup; restore now revalidates. The cloud-metadata hostname check was case-sensitive and could be bypassed with mixed case (`Metadata.google.internal`); now case-insensitive."
+    }
+  ]
+}

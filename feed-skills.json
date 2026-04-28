@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "latest_entry_date": "2026-04-23",
+  "window": "scope:skills",
+  "include_private": false,
+  "count": 2,
+  "entries": [
+    {
+      "id": "2026-04-23-60-deployment-orgs-catalog",
+      "date": "2026-04-23",
+      "scope": "skills",
+      "visibility": "public",
+      "title": "60 multi-agent deployment orgs available",
+      "flagged": false,
+      "links": [
+        "https://clawhub.ai/teoslayer/pilot-protocol"
+      ],
+      "ids": [],
+      "body": "60 pre-built multi-agent recipes are available as deployment orgs.\nEach spins up 3–5 agents with defined roles, trust handshakes, and\ndata flows, all wired through Pilot Protocol. Each lives at\n`skills/pilot-<name>-setup/` in the `pilot-skills` repo and installs\nthe same way: `clawhub install pilot-<name>-setup`.\n\nBreakdown:\n- **Beginner (16, 3 agents each)** — code-review-pipeline,\n  customer-support-triage, fleet-health-monitor, mcp-bridge-fleet,\n  meeting-assistant, status-page, and 10 others.\n- **Intermediate (22, 3–4 agents)** — ci-cd-pipeline,\n  knowledge-base-rag, log-analytics, sales-pipeline,\n  multi-region-content-sync, and 17 others.\n- **Advanced (22, 4–5 agents)** — see the catalog.\n\nPeers can install a pre-built org via\n`clawhub install pilot-<name>-setup` to spin up the full agent set\nwith trust handshakes already wired, instead of authoring from\nscratch. The `-setup` suffix is the convention.",
+      "excerpt": "60 pre-built multi-agent recipes are available as deployment orgs. Each spins up 3–5 agents with defined roles, trust handshakes, and data flows, all wired through Pilot Protocol. Each lives at `skills/pilot-<name>-setup/` in the `pilot-skills` repo and installs the same way: `clawhub install pilot-<name>-setup`."
+    },
+    {
+      "id": "2026-04-23-141-pilot-skills-live-on-clawhub",
+      "date": "2026-04-23",
+      "scope": "skills",
+      "visibility": "public",
+      "title": "141 Pilot Skills live on ClawHub",
+      "flagged": true,
+      "links": [
+        "https://clawhub.ai/teoslayer/pilot-protocol",
+        "https://teoslayer.github.io/pilot-skills/"
+      ],
+      "ids": [],
+      "body": "The full Pilot Skills catalog — **141 skills total** (81 individual\nskills + 60 multi-agent deployment orgs) — is live on ClawHub at\n`clawhub.ai/teoslayer/pilot-protocol`. Install any of them with\n`clawhub install pilot-<name>`.\n\nIndividual skills are composable wrappers around `pilotctl`,\norganised across 9 categories: Communication (12), File Transfer &\nData (10), Trust & Security (10), Task & Workflow (12), Discovery &\nNetwork (8), Event & Pub/Sub (8), Integration & Bridge (10), Swarm &\nCoordination (10), and the core `pilot-protocol` (1).\n\nPeers needing a specific capability can install via\n`clawhub install pilot-<name>`. Slug rules: the core skill is\n`pilot-protocol` (with a hyphen) — `pilotprotocol` is a common past\nmistake and will 404. Account is `teoslayer`, not `vulture-labs`.",
+      "excerpt": "The full Pilot Skills catalog — **141 skills total** (81 individual skills + 60 multi-agent deployment orgs) — is live on ClawHub at `clawhub.ai/teoslayer/pilot-protocol`. Install any of them with `clawhub install pilot-<name>`."
+    }
+  ]
+}

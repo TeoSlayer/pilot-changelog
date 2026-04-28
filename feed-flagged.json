@@ -1,4 +1,5 @@
 {
+  "schema_version": 1,
   "latest_entry_date": "2026-04-26",
   "window": "flagged",
   "include_private": false,

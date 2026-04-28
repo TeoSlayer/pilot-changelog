@@ -269,10 +269,53 @@ def test_integration_render_schema_keys_stable():
         (root / "entries" / "2026-04-25-a-public-entry.md").write_text(VALID_PUBLIC)
         run_script("render.py", root)
         feed = json.loads((root / "feed.json").read_text())
-        assert set(feed.keys()) == {"latest_entry_date", "window", "include_private", "count", "entries"}, feed.keys()
+        expected_top = {"schema_version", "latest_entry_date", "window", "include_private", "count", "entries"}
+        assert set(feed.keys()) == expected_top, feed.keys()
+        assert feed["schema_version"] == 1, feed["schema_version"]
         entry_keys = set(feed["entries"][0].keys())
         expected = {"id", "date", "scope", "visibility", "title", "flagged", "links", "ids", "body", "excerpt"}
         assert entry_keys == expected, entry_keys ^ expected
+    finally:
+        shutil.rmtree(root)
+
+
+@case
+def test_integration_per_scope_feeds_emitted():
+    """Every allowed scope gets a feed file, even if empty (stable URLs)."""
+    root = make_temp_root()
+    try:
+        # VALID_PUBLIC has scope: networks
+        (root / "entries" / "2026-04-25-a-public-entry.md").write_text(VALID_PUBLIC)
+        run_script("render.py", root)
+        scopes = ["protocol", "networks", "skills", "infra", "ops", "docs"]
+        for s in scopes:
+            f = root / f"feed-{s}.json"
+            assert f.exists(), f"missing feed-{s}.json"
+            data = json.loads(f.read_text())
+            assert data["window"] == f"scope:{s}", data["window"]
+        assert json.loads((root / "feed-networks.json").read_text())["count"] == 1
+        assert json.loads((root / "feed-protocol.json").read_text())["count"] == 0
+    finally:
+        shutil.rmtree(root)
+
+
+@case
+def test_integration_index_manifest():
+    """index.json lists every public feed URL with stable schema."""
+    root = make_temp_root()
+    try:
+        (root / "entries" / "2026-04-25-a-public-entry.md").write_text(VALID_PUBLIC)
+        run_script("render.py", root)
+        idx = json.loads((root / "index.json").read_text())
+        assert idx["schema_version"] == 1
+        assert idx["latest_entry_date"] == "2026-04-25"
+        names = {f["name"] for f in idx["feeds"]}
+        # The 5 windowed/flagged + 6 per-scope feeds.
+        expected_names = {"all", "1d", "7d", "1m", "flagged"} | {f"scope:{s}" for s in ["protocol", "networks", "skills", "infra", "ops", "docs"]}
+        assert names == expected_names, names ^ expected_names
+        # Every feed entry must have name/window/url/description.
+        for f in idx["feeds"]:
+            assert set(f.keys()) == {"name", "window", "url", "description"}, f.keys()
     finally:
         shutil.rmtree(root)
 
