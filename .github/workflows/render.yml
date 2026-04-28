@@ -16,6 +16,11 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # Opt actions into Node 24 — silences the Node 20 deprecation warnings.
+  # Default flips on 2026-06-02; remove this env block then.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   validate-and-render:
     runs-on: ubuntu-latest
