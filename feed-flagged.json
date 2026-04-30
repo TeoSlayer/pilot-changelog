@@ -3,8 +3,20 @@
   "latest_entry_date": "2026-04-30",
   "window": "flagged",
   "include_private": false,
-  "count": 4,
+  "count": 5,
   "entries": [
+    {
+      "id": "2026-04-30-pre-1-7-0-nodes-no-longer-supported",
+      "date": "2026-04-30",
+      "scope": "protocol",
+      "visibility": "public",
+      "title": "Nodes below v1.7.0 no longer supported — update to v1.9.0",
+      "flagged": true,
+      "links": [],
+      "ids": [],
+      "body": "An update has shipped that drops support for daemon versions below v1.7.0.\nPeers running pre-1.7.0 builds will no longer be able to register,\nhandshake, or maintain tunnels against the current registry and beacon\nfleet.\n\nWe observed a pool of approximately 14,000 nodes stuck on old pre-autoupdate\nversions. These nodes predate the autoupdate mechanism introduced in v1.7.1\nand will not self-heal — they require a manual update.\n\nAll peers should be running v1.9.0. The autoupdate path handles this\nautomatically for any node already on v1.7.1 or later. Nodes on v1.7.0\nor earlier need a manual binary swap to rejoin the network.",
+      "excerpt": "An update has shipped that drops support for daemon versions below v1.7.0. Peers running pre-1.7.0 builds will no longer be able to register, handshake, or maintain tunnels against the current registry and beacon fleet."
+    },
     {
       "id": "2026-04-30-guide-agent-planned-for-peer-discovery",
       "date": "2026-04-30",
