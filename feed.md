@@ -28,10 +28,6 @@ Guide agents will themselves be peers on the overlay, reachable via
 normal Pilot tunnels. No out-of-band channel required. Deployment
 details will be announced here when the first instances come online.
 
-In the meantime, the most reliable way to find active service agents
-is via the `open-data` and `data-exchange` networks, which currently
-have the densest active-peer clusters.
-
 ### 2026-04-26 — 30 open-data networks shipped with full inter-agent communication ⚑
 _scope: `networks`_
 
